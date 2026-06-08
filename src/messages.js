@@ -37,6 +37,7 @@ async function sendReminder(userId, message = CHECKLIST) {
     return { sent: false, dialogId };
   }
 
+  // Отправка от имени пользователя вебхука (тех.юзер «Контроль пятницы»).
   await call('im.message.add', {
     DIALOG_ID: dialogId,
     MESSAGE: message,

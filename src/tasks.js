@@ -89,24 +89,28 @@ async function getTodayDeadlineUsers(timeZone = process.env.TIMEZONE || 'UTC') {
         '>=DEADLINE': bounds.from,
         '<=DEADLINE': bounds.to,
       },
-      select: ['ID', 'RESPONSIBLE_ID', 'REAL_STATUS'],
+      // tasks.task.list не возвращает REAL_STATUS даже при запросе;
+      // реальный статус приходит в STATUS только если его явно выбрать.
+      select: ['ID', 'RESPONSIBLE_ID', 'STATUS', 'REAL_STATUS'],
     },
     'tasks'
   );
 
   const counts = new Map();
+  let openTasks = 0;
   for (const task of tasks) {
     const status = Number(pick(task, 'realStatus', 'REAL_STATUS', 'status', 'STATUS'));
-    if (!OPEN_STATUSES.has(status)) continue;
+    if (!OPEN_STATUSES.has(status)) continue; // закрытые (5,6,7) не считаем
 
     const uid = String(pick(task, 'responsibleId', 'RESPONSIBLE_ID'));
     if (!uid || uid === 'undefined') continue;
 
+    openTasks += 1;
     counts.set(uid, (counts.get(uid) || 0) + 1);
   }
 
   logger.info(
-    { tasksTotal: tasks.length, users: counts.size },
+    { fetched: tasks.length, openTasks, closedSkipped: tasks.length - openTasks, users: counts.size },
     'Исполнители собраны'
   );
   return counts;

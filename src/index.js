@@ -34,6 +34,7 @@ async function main() {
   }
 
   let sent = 0;
+  let skipped = 0; // dry-run: посчитано, но не отправлено
   let failed = 0;
   let tasksTotal = 0;
   let first = true;
@@ -44,8 +45,9 @@ async function main() {
     first = false;
 
     try {
-      await sendReminder(uid);
-      sent += 1;
+      const res = await sendReminder(uid);
+      if (res && res.sent) sent += 1;
+      else skipped += 1;
     } catch (err) {
       // Ошибка отправки одному не должна валить остальных.
       failed += 1;
@@ -57,8 +59,10 @@ async function main() {
     {
       users: counts.size,
       sent,
+      skipped,
       failed,
       tasksTotal,
+      dryRun: skipped > 0 && sent === 0,
       durationMs: Date.now() - startedAt,
     },
     'Прогон завершён'
