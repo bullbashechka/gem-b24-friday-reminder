@@ -56,12 +56,15 @@ node src/index.js                           # боевой прогон
 
 ### 4. Cron
 
+Расписание: пятница 09:30 один раз, затем каждый час 17:00–23:00. Часы указаны в **UTC** (−5 от Asia/Yekaterinburg):
+
 ```cron
-0 9-18 * * 5  cd /opt/b24-friday-reminder && /usr/bin/node src/index.js >> logs/app.log 2>&1
+30 4 * * 5     cd /opt/b24-friday-reminder && /usr/bin/node src/index.js >> logs/app.log 2>&1
+0 12-18 * * 5  cd /opt/b24-friday-reminder && /usr/bin/node src/index.js >> logs/app.log 2>&1
 ```
 
 > Указывать **полный путь** к node — в cron другой PATH. Узнать: `which node`.
-> Проверить таймзону сервера: `timedatectl`. Скрипт считает «сегодня» по `TIMEZONE` из `.env`, не по системной зоне.
+> Часы в UTC: `4:30 = 09:30`, `12–18 = 17:00–23:00` по UTC+5. Если сервер не в UTC, пересчитать (`timedatectl`). Скрипт считает «сегодня» по `TIMEZONE` из `.env`, не по системной зоне.
 
 ### 5. Ротация логов
 
