@@ -1,0 +1,17 @@
+{
+  "name": "b24-friday-reminder",
+  "version": "1.0.0",
+  "description": "Бот-напоминалка для Битрикс24: по пятницам шлёт сотрудникам с задачами на сегодня чек-лист дел перед концом недели.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "tasks": "node src/tasks.js",
+    "test:self": "node src/messages.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.0",
+    "pino": "^9.0.0"
+  }
+}
